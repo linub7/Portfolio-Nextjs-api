@@ -1,18 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const { readdirSync } = require('fs');
-const mongoose = require('mongoose');
+const db = require('./db');
+const cors = require('cors');
+const morgan = require('morgan');
 
 const server = express();
+db();
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MONGO DB Connected');
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+server.use(cors({ origin: 'http://localhost:3000' }));
+server.use(morgan('dev'));
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
 
 // routes middleware
 readdirSync('./routes').map((r) =>
