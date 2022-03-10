@@ -51,8 +51,45 @@ exports.createPortfolio = async (req, res) => {
       startDate,
       endDate,
     });
+    newPortfolio.userId = req.user.sub;
     await newPortfolio.save();
     res.json({ portfolio: newPortfolio });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: err });
+  }
+};
+
+exports.updatePortfolio = async (req, res) => {
+  const {
+    body,
+    params: { id },
+  } = req;
+
+  try {
+    const updatedPortfolio = await Portfolio.findOneAndUpdate(
+      { _id: id },
+      body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    res.json(updatedPortfolio);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ error: err });
+  }
+};
+
+exports.deletePortfolio = async (req, res) => {
+  const {
+    params: { id },
+  } = req;
+
+  try {
+    const portfolio = await Portfolio.findByIdAndRemove(id);
+    res.json({ id: portfolio._id });
   } catch (err) {
     console.log(err);
     res.status(400).json({ error: err });
