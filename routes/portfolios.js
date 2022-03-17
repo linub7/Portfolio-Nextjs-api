@@ -6,7 +6,7 @@ const {
   updatePortfolio,
   deletePortfolio,
 } = require('../controllers/portfolios');
-const { checkJwt } = require('../middlewares/auth');
+const { checkJwt, checkRole } = require('../middlewares/auth');
 
 const router = express.Router();
 
@@ -17,6 +17,6 @@ router.post('/portfolios', checkJwt, createPortfolio);
 router.get('/portfolios/:id', getPortfolio);
 // create middleware to check for admin rights!!!
 router.patch('/portfolios/:id', checkJwt, updatePortfolio);
-router.delete('/portfolios/:id', checkJwt, deletePortfolio);
+router.delete('/portfolios/:id', checkJwt, checkRole('admin'), deletePortfolio);
 
 module.exports = router;
